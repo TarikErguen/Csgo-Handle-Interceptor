@@ -96,4 +96,19 @@ Anschließend überprüfen wir, ob Steam csgo öffnen möchte mit einem einfache
 
 Doch es gibt ein Problem...
 
-Als ich Steam debugged habe ist mir aufgefallen, dass der Handle nachdem er kreiert wird, sofort wieder mittels CloseHandle gelöscht wird.
+Nach einer Weile ist der Handle ungültig. Beim Debuggen von Steam ist mir aufgefallen, dass der Handle kurze Zeit nachdem er kreiert wurde, mittels CloseHandle geschlossen wird. Also muss ein Weg her, um dies zu vermeiden.
+
+Dafür hooke ich auch noch CloseHandle und verhindere, dass die originale Funktion aufgerufen wird, sodass der Handle nicht mehr von Steam geschlossen werden kann.
+
+ ```
+// CloseHandle wird manipuliert
+BOOL CloseHandleHook(HANDLE hObject)
+{
+	// Falls Steam versucht den CSGO Handle zu schließen, verhindere es.
+	if (hObject == csgo_handle)
+		return 0;
+
+	// Originaler CloseHandle wird abgerufen
+	return original_closehandle(hObject);
+}
+ ```
