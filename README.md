@@ -1,5 +1,8 @@
 # Csgo-Handle-Interceptor
 
+
+# Credits
+MinHook - https://www.codeproject.com/Articles/44326/MinHook-The-Minimalistic-x-x-API-Hooking-Libra
 # Was ist Csgo-Handle-Interceptor?
 Das Valve Anti Cheat (VAC) System versucht fremde Zugänge zu CS:GO durch externe Prozesse zu verhinden.
 Aus diesem Grund gehen sie alle Prozesse durch, die einen Handle zu CS:GO verwenden. 
