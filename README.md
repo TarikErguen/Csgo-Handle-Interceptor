@@ -1,5 +1,9 @@
 # Csgo-Handle-Interceptor
 
+# Voraussetzungen
+C/C++
+x86 Assembly
+Debugger, Memory Viewer (x32 Dbg, Cheat Engine)
 
 # Credits
 MinHook - https://www.codeproject.com/Articles/44326/MinHook-The-Minimalistic-x-x-API-Hooking-Libra
@@ -7,7 +11,7 @@ MinHook - https://www.codeproject.com/Articles/44326/MinHook-The-Minimalistic-x-
 Das Valve Anti Cheat (VAC) System versucht fremde Zugänge zu CS:GO durch externe Prozesse zu verhinden.
 Aus diesem Grund gehen sie alle Prozesse durch, die einen Handle zu CS:GO verwenden. 
 Ähnlich wie Anti Malware Software wird für jeden Prozess eine Signatur (eine Art Hash) generiert und mit den Einträgen in ihrer Datenbank abgeglichen.
-Wurde eine unerlaubte Software verwendet, wird dieser Spieler dauerhaft gesperrt. 
+Wurde eine unerlaubte Software verwendet, wird dieser Spieler dauerhaft gesperrt. Verwendet man jedoch, den gleichen Handle den Steam selbst verwendet, denkt das Anti Cheat System es müsse diesen nicht näher betrachten. So umgeht man etwaige Detections.
 
 # Was soll erreicht werden?
 Steam startet den Process CSGO.exe, indem es die Windows API CreateProcessW verwendet. Auf msdn kann man sich nähere Informationen zur Funktion einholen:
