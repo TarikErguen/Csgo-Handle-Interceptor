@@ -42,4 +42,58 @@ Ein Hook ist ein Weg den ursprünglichen Ablauf einer Funktion zu modifizieren. 
 Die ersten 5 bytes von CreateProcessW werden überschrieben.
 
 Vorher:
+![alt text](https://github.com/TarikErguen/Csgo-Handle-Interceptor/blob/master/Vorher.PNG)
 
+Nachher:
+![alt text](https://github.com/TarikErguen/Csgo-Handle-Interceptor/blob/master/nachher.PNG)
+
+Der erste byte wird mit dem Opcode E9, also jmp in asm x86 überschrieben.
+Die nächsten 4 bytes beinhalten die relative Adresse zu unserer modifizierten Funktion CreateProcessWHook
+
+Das bedeutet nun: Immer wenn Steam CreateProcessW aufruft, wird zunächst unsere Funktion CreateProcessWHook aufgerufen.
+
+Wichtig: Der Funktionsprototyp des Hooks muss identisch mit der Originalen Funktion sein, ansonsten entstehen Fehler auf dem Stack und das Programm stürzt ab.
+
+Wo werden Hooks sonst noch verwendet?
+Overlays (z.B. für UI), Sicherheitsdienste, Malware, Input (Maus, Keyboard)
+
+# Wie bekommen wir Zugang zum Handle?
+Bereits oben habe ich erklärt, dass wir den Wert von hProcess (welcher ein Pointer ist) auslesen möchten. Dafür brauchen wir die Adresse vom Pointer der auf diese Variable zeigt, also lpProcessInformation.
+Unser Hook muss also folgendermaßen aussehen:
+
+```
+BOOL WINAPI  CreateProcessWHook(LPCWSTR lpApplicationName,
+	LPWSTR                lpCommandLine,
+	LPSECURITY_ATTRIBUTES lpProcessAttributes,
+	LPSECURITY_ATTRIBUTES lpThreadAttributes,
+	BOOL                  bInheritHandles,
+	DWORD                 dwCreationFlags,
+	LPVOID                lpEnvironment,
+	LPCWSTR               lpCurrentDirectory,
+	LPSTARTUPINFOW        lpStartupInfo,
+	LPPROCESS_INFORMATION lpProcessInformation)
+{
+	// Originale CreateProcessW Funktion wird aufgerufen.
+	auto ret = original(lpApplicationName, lpCommandLine, lpProcessAttributes, lpThreadAttributes, bInheritHandles, dwCreationFlags, lpEnvironment, lpCurrentDirectory, lpStartupInfo, lpProcessInformation);	
+	
+	// Überprüfe, ob csgo geöffnet wird, falls ja speicher den Handle
+	if (wcsstr(lpApplicationName, L"csgo")) {
+		csgo_handle		= lpProcessInformation->hProcess;	
+		
+		// Hook kann entfernt werden. Funktion funktioniert jetzt normal.
+		MH_RemoveHook(&CreateProcessW);
+	}
+	
+	// Originaler Rückgabewert
+	return ret;
+}
+ ```
+Damit der Prozess überhaupt gestartet werden kann, muss logischerweise die originale CreateProcessW noch einmal von uns aufgerufen werden.
+Dabei dürfen wir jedoch nicht die Originale Funktionsadresse verwenden, da wir ja sonst immer wieder unseren Hook aufrufen würden.
+Wir rufen CreateProcessW auf, indem wir 6 bytes (da wir ja 5 bytes überschrieben hatten) überspringen. 
+
+Anschließend überprüfen wir, ob Steam csgo öffnen möchte mit einem einfachen String-Vergleich. Anschließend wird der Handle aus hProcess gespeichert und der Hook kann wieder entfernt werden.
+
+Doch es gibt ein Problem...
+
+Als ich Steam debugged habe ist mir aufgefallen, dass der Handle nachdem er kreiert wird, sofort wieder mittels CloseHandle gelöscht wird.
