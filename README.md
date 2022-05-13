@@ -2,8 +2,11 @@
 
 # Voraussetzungen
 C/C++
+
 x86 Assembly
+
 Debugger, Memory Viewer (x32 Dbg, Cheat Engine)
+
 
 # Credits
 MinHook - https://www.codeproject.com/Articles/44326/MinHook-The-Minimalistic-x-x-API-Hooking-Libra
