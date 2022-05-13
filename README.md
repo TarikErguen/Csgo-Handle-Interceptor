@@ -1,11 +1,9 @@
 # Csgo-Handle-Interceptor
 
 # Voraussetzungen
-C/C++
-
-x86 Assembly
-
-Debugger, Memory Viewer (x32 Dbg, Cheat Engine)
+C/C++  
+x86 Assembly  
+Debugger, Memory Viewer (x32 Dbg, Cheat Engine)  
 
 
 # Credits
@@ -64,7 +62,7 @@ Das bedeutet nun: Immer wenn Steam CreateProcessW aufruft, wird zunächst unsere
 
 Wichtig: Der Funktionsprototyp des Hooks muss identisch mit der Originalen Funktion sein, ansonsten entstehen Fehler auf dem Stack und das Programm stürzt ab.
 
-Wo werden Hooks sonst noch verwendet?
+Wo werden Hooks sonst noch verwendet?  
 Overlays (z.B. für UI), Sicherheitsdienste, Malware, Input (Maus, Keyboard)
 
 # Wie bekommen wir Zugang zum Handle?
